@@ -1,0 +1,3101 @@
+\documentclass[11pt]{article}
+
+% -------------------------
+% Packages
+% -------------------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  citecolor=black
+]{hyperref}
+
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+% -------------------------
+% Section Spacing + Divider
+% -------------------------
+\usepackage{titlesec}
+\usepackage{tikz}
+
+% Section spacing (clear separation)
+\titlespacing*{\section}
+{0pt}                % left
+{5.0ex plus 1.5ex}   % space BEFORE section title
+{2.8ex plus 0.5ex}   % space AFTER section title
+
+
+% Subsection spacing
+\titlespacing*{\section}
+{0pt}{2.8ex plus .6ex}{0.8ex}
+
+
+% Subsubsection spacing (compact)
+\titlespacing*{\subsubsection}
+{0pt}{2.0ex plus .5ex minus .2ex}{1.0ex plus .2ex}
+
+% Dashed divider after each section
+\newcommand{\sectionline}{
+  \vspace{0.3em}
+  \noindent\begin{tikzpicture}
+    \draw[dashed, gray] (0,0) -- (\linewidth,0);
+  \end{tikzpicture}
+  \vspace{0.4em}
+}
+
+
+% Automatically insert divider after every section
+\titleformat{\section}
+  {\normalfont\Large\bfseries}
+  {\thesection}{1em}{}
+  [\sectionline]
+
+
+% -------------------------
+% Code Formatting
+% -------------------------
+\usepackage{listings}
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{gray},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    breaklines=true,
+    tabsize=2,
+    showstringspaces=false
+}
+
+% -------------------------
+% Title
+% -------------------------
+\title{\textbf{Competitive Programming Maths}}
+\author{}
+\date{}
+\setcounter{tocdepth}{2}
+
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% =====================================================
+% PASTE ALL CONTENT BELOW THIS LINE
+% =====================================================
+
+\section{Number Bases and Binary Mathematics}
+
+\subsection{What Are Number Bases?}
+
+\subsubsection{Definition}
+A \textbf{number base} (or radix) is the number of distinct digits used to represent numbers, including zero.
+In base $b$, each digit position represents a power of $b$.
+
+\[
+(d_k d_{k-1} \ldots d_1 d_0)_b = \sum_{i=0}^{k} d_i \cdot b^i
+\]
+
+\subsection{Binary Numbers}
+
+\subsubsection{Representation}
+Binary numbers use base 2.
+
+\[
+(101101)_2 = 1\cdot2^5 + 0\cdot2^4 + 1\cdot2^3 + 1\cdot2^2 + 0\cdot2^1 + 1\cdot2^0 = 45
+\]
+
+\subsubsection{Key Properties}
+\begin{itemize}
+    \item Each bit represents a power of 2
+    \item $k$ bits represent values from $0$ to $2^k - 1$
+    \item LSB decides parity
+\end{itemize}
+
+\subsection{Bitwise Operators}
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+Operator & Symbol & Meaning \\
+\midrule
+AND & \texttt{\&} & Both bits must be 1 \\
+OR & \texttt{|} & Any bit is 1 \\
+XOR & \texttt{\^} & Bits differ \\
+NOT & \texttt{\~} & Flip bits \\
+Left Shift & \texttt{<<} & Multiply by $2^k$ \\
+Right Shift & \texttt{>>} & Divide by $2^k$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Binary Tricks}
+
+\subsubsection{Power of Two Check}
+\[
+n > 0 \land (n \& (n-1)) = 0
+\]
+
+\textbf{Why it works:}  
+A power of two has exactly one set bit. Subtracting 1 flips that bit and all bits after it, so AND becomes zero.
+
+---
+
+\subsubsection{Lowest Set Bit}
+\[
+n \& (-n)
+\]
+
+\textbf{Meaning:}  
+Extracts the value of the least significant set bit.
+
+\textbf{Example:}
+\[
+n = 12 = (1100)_2 \Rightarrow n \& (-n) = 4
+\]
+
+---
+
+\subsubsection{Important XOR Identities}
+
+\begin{itemize}
+    \item $a \oplus a = 0$
+    \item $a \oplus 0 = a$
+    \item $a \oplus b \oplus a = b$
+    \item XOR is \textbf{commutative} and \textbf{associative}
+\end{itemize}
+
+---
+
+\subsubsection{AND Operator Properties}
+
+\begin{itemize}
+    \item $a \& a = a$
+    \item $a \& 0 = 0$
+    \item $a \& b \le \min(a, b)$
+\end{itemize}
+
+\textbf{Observation:}  
+AND only keeps bits that are set in \textbf{both} numbers.
+
+---
+
+\subsubsection{OR Operator Properties}
+
+\begin{itemize}
+    \item $a | a = a$
+    \item $a | 0 = a$
+    \item $a | b \ge \max(a, b)$
+\end{itemize}
+
+\textbf{Observation:}  
+OR sets a bit if it appears in \textbf{either} number.
+
+---
+
+\subsubsection{Bitwise NOT}
+
+\[
+\sim a = -a - 1
+\]
+
+\textbf{Why this holds:}  
+Integers are stored in two's complement.
+
+\textbf{Example:}
+\[
+a = 5 \Rightarrow \sim a = -6
+\]
+
+---
+
+\subsubsection{Useful CP Identities}
+
+\begin{itemize}
+    \item $(a \oplus b) \oplus c = a \oplus (b \oplus c)$
+    \item $a + b = (a \oplus b) + 2 \cdot (a \& b)$
+    \item Removing lowest set bit:
+    \[
+    n = n \& (n-1)
+    \]
+\end{itemize}
+
+---
+
+
+\subsection{C++ Built-in Functions}
+
+\subsubsection{Popcount}
+\begin{lstlisting}
+int x = 13;
+int bits = __builtin_popcount(x); // 3
+\end{lstlisting}
+
+\subsubsection{Leading / Trailing Zeros}
+\begin{lstlisting}
+int x = 16;
+__builtin_ctz(x); // 4
+__builtin_clz(x); // depends on bit-width
+\end{lstlisting}
+
+\subsection{What is $\log_2$?}
+
+\subsubsection{Definition}
+\[
+\log_2(n) = \text{the power to which 2 must be raised to obtain } n
+\]
+
+\subsubsection{CP Interpretation}
+\begin{itemize}
+    \item Number of bits required to represent $n$
+    \item Number of times we can divide $n$ by 2 before it becomes zero
+\end{itemize}
+
+\subsubsection{Properties of $\log_2$}
+
+For positive numbers $a, b$:
+
+\begin{itemize}
+    \item $\log_2(1) = 0$
+    \item $\log_2(2^k) = k$
+    \item $\log_2(ab) = \log_2(a) + \log_2(b)$
+    \item $\log_2\!\left(\frac{a}{b}\right) = \log_2(a) - \log_2(b)$
+    \item $\log_2(a^k) = k \log_2(a)$
+\end{itemize}
+
+\subsubsection{Important Inequality}
+\[
+2^{\lfloor \log_2(n) \rfloor} \le n < 2^{\lfloor \log_2(n) \rfloor + 1}
+\]
+
+\subsubsection{Relation with Binary Length}
+The number of bits required to represent a positive integer $n$ is:
+\[
+\lfloor \log_2(n) \rfloor + 1
+\]
+
+\subsection{Edge Cases}
+\begin{itemize}
+    \item \texttt{\_\_builtin\_clz(0)} is undefined
+    \item Shifting negative integers is implementation-defined
+    \item Avoid floating-point \texttt{log2} due to precision issues
+    \item Prefer bitwise operations for exact results
+\end{itemize}
+
+
+% =====================================================
+\section{Data Types and Precision in C++}
+% =====================================================
+
+\subsection{Why Data Types Matter}
+Choosing the correct data type is critical in competitive programming because:
+\begin{itemize}
+    \item Overflow bugs silently produce wrong answers
+    \item Bitwise operations depend on exact binary representation
+    \item Floating-point precision errors can break geometry and math problems
+\end{itemize}
+
+% =====================================================
+\subsection{Integer Data Types}
+% =====================================================
+
+\subsubsection{Signed Integers}
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Type & Bits & Decimal Range & Binary Representation \\
+\midrule
+\texttt{int} & 32 &
+$[-2^{31}, 2^{31}-1]$ &
+Two's Complement \\
+\texttt{long long} & 64 &
+$[-2^{63}, 2^{63}-1]$ &
+Two's Complement \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Two's Complement Representation}
+Signed integers are stored using \textbf{two's complement}:
+\begin{itemize}
+    \item MSB indicates sign
+    \item Negative numbers are represented as:
+    \[
+    -x = \sim x + 1
+    \]
+\end{itemize}
+
+\subsubsection{Unsigned Integers}
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Type & Bits & Decimal Range & Binary Range \\
+\midrule
+\texttt{unsigned int} & 32 &
+$[0, 2^{32}-1]$ &
+$[0, 111\ldots111_2]$ \\
+\texttt{unsigned long long} & 64 &
+$[0, 2^{64}-1]$ &
+$[0, 111\ldots111_2]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{CP Rule}
+Use \texttt{long long} by default.  
+
+% =====================================================
+\subsection{Floating Point Data Types}
+% =====================================================
+
+\subsubsection{Types and Precision}
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Type & Size & Significant Digits & Exponent Range \\
+\midrule
+\texttt{float} & 32-bit & $\sim 6$ & $\sim 10^{\pm38}$ \\
+\texttt{double} & 64-bit & $\sim 15$ & $\sim 10^{\pm308}$ \\
+\texttt{long double} & 80-bit (gcc) & $\sim 18$ & Larger \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{IEEE 754 Representation (Conceptual)}
+A floating-point number is stored as:
+\[
+(-1)^{sign} \times mantissa \times 2^{exponent}
+\]
+
+Because mantissa has limited bits, many decimals cannot be represented exactly.
+
+% =====================================================
+\subsection{Floating Point Inaccuracies (With Examples)}
+% =====================================================
+
+\subsubsection{Why Floating Point Inaccuracies Occur}
+Many decimal numbers cannot be represented exactly in binary.
+
+\[
+0.1_{10} = 0.00011001100110011\ldots_2
+\]
+
+Since the binary expansion is infinite, it must be truncated, leading to approximation errors.
+
+\subsubsection{Example 1: Unexpected Output}
+
+\begin{lstlisting}
+double x = 0.1 + 0.2;
+cout << fixed << setprecision(17) << x;
+\end{lstlisting}
+
+\textbf{Output:}
+\[
+0.30000000000000004
+\]
+
+\subsubsection{Example 2: Equality Comparison Failure}
+
+\begin{lstlisting}
+double a = 0.3;
+double b = 0.1 + 0.2;
+
+if (a == b)
+    cout << "Equal";
+else
+    cout << "Not Equal";
+\end{lstlisting}
+
+\textbf{Output:}
+\[
+\texttt{Not Equal}
+\]
+
+% =====================================================
+\subsection{Comparing Floating Point Numbers}
+% =====================================================
+
+\subsubsection{Why \texttt{==} is Dangerous}
+\begin{itemize}
+    \item Floating-point numbers are approximations
+    \item Exact equality rarely holds
+\end{itemize}
+
+\subsubsection{Epsilon-Based Comparison}
+
+\paragraph{Definition}
+\[
+\varepsilon = \text{a very small positive number}
+\]
+
+\paragraph{Rule}
+\[
+|a - b| < \varepsilon \Rightarrow a \approx b
+\]
+
+\paragraph{Typical Values}
+\begin{itemize}
+    \item \texttt{1e-9} for \texttt{double}
+    \item \texttt{1e-12} or smaller for \texttt{long double}
+\end{itemize}
+
+\subsubsection{C++ Implementation}
+\begin{lstlisting}
+const double EPS = 1e-9;
+
+bool equal(double a, double b) {
+    return fabs(a - b) < EPS;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Competitive Programming Notes}
+% =====================================================
+
+\begin{itemize}
+    \item Use \texttt{long long} everywhere by default to avoid overflow
+    \item \texttt{int} operations are faster than \texttt{long long}, but safety matters more
+    \item Prefer integer arithmetic over floating-point whenever possible
+    \item Comparing floating-point numbers using \texttt{==} leads to incorrect results
+    \item \texttt{\_\_builtin\_clz(0)} and similar functions are undefined
+    \item Shifting negative integers is implementation-defined
+\end{itemize}
+
+% =====================================================
+\subsection{Why \texttt{int} can give Runtime Error}
+% =====================================================
+
+\subsubsection{Problem Reference (CP Context)}
+
+This issue appears in the following real competitive programming problem:
+
+\begin{itemize}
+    \item \textbf{Divide Two Integers}
+    \item Platform: LeetCode
+    \item Link: \url{https://leetcode.com/problems/divide-two-integers/description/}
+\end{itemize}
+
+\subsubsection{The Problematic Case}
+
+Consider the division:
+\[
+-2^{31} \div (-1)
+\]
+
+\textbf{Mathematically:}
+\[
+-2^{31} \div (-1) = 2^{31}
+\]
+
+However,
+\[
+2^{31} = 2147483648 > \texttt{INT\_MAX}
+\]
+
+\subsubsection{Why This Causes a Runtime Error}
+
+A 32-bit signed integer (\texttt{int}) has the range:
+\[
+[-2^{31},\ 2^{31}-1]
+\]
+
+The value $2147483648$ cannot be represented using \texttt{int}.  
+In C++, this results in \textbf{undefined behavior}.
+
+\subsubsection{Failing Code Example}
+
+\begin{lstlisting}
+int divide(int dividend, int divisor) {
+    return dividend / divisor;
+}
+\end{lstlisting}
+
+\textbf{Input:}
+\[
+\texttt{dividend = -2147483648,\ divisor = -1}
+\]
+
+\textbf{Observed Result:}
+\begin{itemize}
+    \item Runtime Error
+    \item Integer overflow
+    \item Undefined behavior
+\end{itemize}
+
+\subsubsection{Correct Approach Using \texttt{long long}}
+
+\begin{lstlisting}
+int divide(int dividend, int divisor) {
+    return min(2147483647LL,(long long)dividend / divisor));
+}
+\end{lstlisting}
+
+% =====================================================
+\section{Modular Arithmetic and Binary Exponentiation}
+% =====================================================
+
+\subsection{What is Modular Arithmetic?}
+
+\subsubsection{Definition}
+For a positive integer $m$, we say:
+\[
+a \equiv b \pmod{m}
+\]
+if $(a - b)$ is divisible by $m$.
+
+In competitive programming, answers are often required modulo a fixed number, most commonly:
+\[
+m = 10^9 + 7 \quad \text{or} \quad m = 998244353
+\]
+
+
+\subsubsection{Why Modulo is Used}
+\begin{itemize}
+    \item Prevents integer overflow
+    \item Keeps values within fixed bounds
+    \item Required explicitly in many problems
+\end{itemize}
+
+% =====================================================
+\subsection{Basic Properties of Modulo}
+% =====================================================
+
+For any integers $a, b$:
+
+\begin{align*}
+(a + b) \bmod m &= ((a \bmod m) + (b \bmod m)) \bmod m \\
+(a - b) \bmod m &= ((a \bmod m) - (b \bmod m) + m) \bmod m \\
+(a \cdot b) \bmod m &= ((a \bmod m) \cdot (b \bmod m)) \bmod m
+\end{align*}
+
+\subsubsection{Important Warning}
+\[
+(a / b) \bmod m \neq (a \bmod m) / (b \bmod m)
+\]
+
+Division under modulo requires a \textbf{modular inverse}.
+
+% =====================================================
+\subsection{Binary Exponentiation}
+% =====================================================
+
+\subsubsection{Problem}
+Compute:
+\[
+a^b \bmod m
+\]
+efficiently.
+
+A naive approach takes $O(b)$ time, which is too slow.
+
+\subsubsection{Idea}
+Represent the exponent in binary and repeatedly square the base.
+
+\subsubsection{Algorithm}
+\begin{lstlisting}
+long long binpow(long long a, long long b, long long m) {
+    long long res = 1;
+    a %= m;
+    while (b) {
+        if (b & 1) res = (res * a) % m;
+        a = (a * a) % m;
+        b >>= 1;
+    }
+    return res;
+}
+\end{lstlisting}
+
+\subsubsection{Time Complexity}
+\[
+O(\log b)
+\]
+
+% =====================================================
+\subsection{Modular Inverse}
+% =====================================================
+
+\subsubsection{Definition}
+The modular inverse of $a$ modulo $m$ is a number $x$ such that:
+\[
+a \cdot x \equiv 1 \pmod{m}
+\]
+
+\subsubsection{Existence Condition}
+A modular inverse exists if and only if:
+\[
+\gcd(a, m) = 1
+\]
+
+% =====================================================
+\subsection{Modular Inverse Using Fermat's Little Theorem}
+% =====================================================
+
+\subsubsection{Theorem}
+If $m$ is prime and $\gcd(a, m) = 1$, then:
+\[
+a^{m-1} \equiv 1 \pmod{m}
+\]
+
+\subsubsection{Proof}
+From Fermat's Little Theorem:
+\[
+a^{m-1} \equiv 1 \pmod{m}
+\]
+
+Multiplying both sides by $a^{-1}$:
+\[
+a^{m-2} \equiv a^{-1} \pmod{m}
+\]
+
+Hence,
+\[
+\boxed{a^{-1} \equiv a^{m-2} \pmod{m}}
+\]
+
+% =====================================================
+\subsection{Reference Implementation}
+% =====================================================
+
+\subsubsection{Modular Power}
+
+\begin{lstlisting}
+long long modpow(long long a, long long b, long long m) {
+    long long res = 1;
+    a %= m;
+    while (b) {
+        if (b & 1) res = (res * a) % m;
+        a = (a * a) % m;
+        b >>= 1;
+    }
+    return res;
+}
+\end{lstlisting}
+
+\subsubsection{Modular Inverse}
+
+\begin{lstlisting}
+long long inv(long long a, long long m) {
+    return modpow(a, m - 2, m);
+}
+\end{lstlisting}
+
+\subsubsection{Division Under Modulo}
+
+\[
+\frac{a}{b} \bmod m = a \cdot b^{-1} \bmod m
+\]
+
+\begin{lstlisting}
+long long divide(long long a, long long b, long long m) {
+    return (a % m) * inv(b, m) % m;
+}
+\end{lstlisting}
+
+
+% =====================================================
+\subsection{Common Pitfalls}
+% =====================================================
+
+\begin{itemize}
+    \item Modular inverse does not exist if $\gcd(a, m) \neq 1$
+    \item Fermat's method works only for prime moduli
+    \item Forgetting modulo during multiplication causes overflow
+    \item Direct division under modulo is incorrect
+\end{itemize}
+
+% =====================================================
+\section{Greatest Common Divisor (GCD) and Euclidean Algorithm}
+% =====================================================
+
+\subsection{What is GCD?}
+
+\subsubsection{Definition}
+The \textbf{Greatest Common Divisor (GCD)} of two integers $a$ and $b$,
+denoted as $\gcd(a, b)$, is the largest positive integer that divides both
+$a$ and $b$.
+
+\[
+\gcd(a, b) = \max \{ d \mid d \mid a \text{ and } d \mid b \}
+\]
+
+\subsubsection{Examples}
+\[
+\gcd(12, 18) = 6
+\]
+\[
+\gcd(7, 13) = 1
+\]
+
+If $\gcd(a, b) = 1$, the numbers are called \textbf{coprime}.
+
+% =====================================================
+\subsection{Properties of GCD}
+% =====================================================
+
+\begin{itemize}
+    \item $\gcd(a, 0) = |a|$
+    \item $\gcd(0, 0)$ is undefined
+    \item $\gcd(a, b) = \gcd(b, a)$
+    \item $\gcd(a, b) = \gcd(b, a \bmod b)$
+    \item $\gcd(a, b) \mid a$ and $\gcd(a, b) \mid b$
+    \item If $d \mid a$ and $d \mid b$, then $d \mid \gcd(a, b)$
+\end{itemize}
+
+\subsubsection{Relation with LCM}
+\[
+\gcd(a, b) \cdot \text{lcm}(a, b) = |a \cdot b|
+\]
+
+% =====================================================
+\subsection{Euclidean Algorithm}
+% =====================================================
+
+\subsubsection{Idea}
+The Euclidean Algorithm is based on the observation:
+\[
+\gcd(a, b) = \gcd(b, a \bmod b)
+\]
+
+We repeatedly replace the larger number by the remainder until it becomes zero.
+
+\subsubsection{Algorithm Steps}
+\begin{enumerate}
+    \item If $b = 0$, return $a$
+    \item Otherwise, compute $\gcd(b, a \bmod b)$
+\end{enumerate}
+
+% =====================================================
+\subsection{Proof of Euclidean Algorithm}
+% =====================================================
+
+Let $a = bq + r$, where $r = a \bmod b$.
+
+\begin{itemize}
+    \item Any number dividing both $a$ and $b$ also divides $r = a - bq$
+    \item Any number dividing both $b$ and $r$ also divides $a$
+\end{itemize}
+
+Hence, the set of common divisors of $(a, b)$ and $(b, r)$ is the same.
+
+\[
+\Rightarrow \gcd(a, b) = \gcd(b, a \bmod b)
+\]
+
+This justifies the correctness of the algorithm.
+
+% =====================================================
+\subsection{Time Complexity}
+% =====================================================
+
+Each step reduces the second argument.
+
+\[
+\text{Time Complexity} = O(\log \min(a, b))
+\]
+
+This makes the Euclidean Algorithm extremely efficient even for large numbers.
+
+% =====================================================
+\subsection{C++ Implementation}
+% =====================================================
+
+\subsubsection{Recursive Version}
+
+\begin{lstlisting}
+long long gcd(long long a, long long b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+\end{lstlisting}
+
+\subsubsection{Iterative Version}
+
+\begin{lstlisting}
+long long gcd(long long a, long long b) {
+    while (b) {
+        a %= b;
+        swap(a, b);
+    }
+    return a;
+}
+\end{lstlisting}
+
+\subsubsection{Using C++ Built-in Function}
+
+\begin{lstlisting}
+long long g = __gcd(a, b); // or std::gcd(a, b) in C++17+
+\end{lstlisting}
+
+% =====================================================
+\subsection{Practice Problem: Yet Another Array Problem}
+% =====================================================
+
+\subsubsection{Problem Reference}
+
+\begin{itemize}
+    \item \textbf{Problem}: D. Yet Another Array Problem
+    \item Platform: Codeforces
+    \item Link: \url{https://codeforces.com/contest/2167/problem/D}
+\end{itemize}
+
+\subsubsection{Problem Summary}
+
+You are given an array $a$ of length $n$.
+Find the smallest integer $x \ (2 \le x \le 10^{18})$ such that:
+\[
+\exists i \text{ with } \gcd(a_i, x) = 1
+\]
+
+If no such $x$ exists, output $-1$.
+
+---
+
+\subsubsection{Key Observation}
+
+If $\gcd(a_i, x) = 1$, then:
+\begin{itemize}
+    \item $x$ shares \textbf{no common prime factor} with $a_i$
+\end{itemize}
+
+So instead of reasoning about $x$ directly, we reason about its \textbf{prime divisors}.
+
+---
+
+\subsubsection{Important Claim}
+
+Let $x$ be a valid answer and let $p$ be the smallest prime divisor of $x$.
+
+Then:
+\[
+\gcd(p, a_i) = 1 \quad \text{for some } i
+\]
+
+\subsubsection{Proof of the Claim}
+
+Let:
+\[
+x = p_1^{e_1} \cdot p_2^{e_2} \cdots p_k^{e_k}
+\]
+
+and:
+\[
+a_i = q_1^{f_1} \cdot q_2^{f_2} \cdots
+\]
+
+We know:
+\[
+\gcd(x, a_i) = \prod p_j^{\min(e_j, f_j)} = 1
+\]
+
+Hence, for every prime divisor $p_j$ of $x$, we must have:
+\[
+f_j = 0
+\]
+
+In particular, for the smallest prime divisor $p$ of $x$:
+\[
+\gcd(p, a_i) = 1
+\]
+
+Thus, it is sufficient to check only \textbf{prime numbers} as candidates for $x$.
+
+---
+
+\subsubsection{Why Brute Force Over Small Primes Works}
+
+We are asked for the \textbf{smallest} such $x$.
+
+Observe:
+\[
+2 \cdot 3 \cdot 5 \cdot 7 \cdots 53 > 10^{18}
+\]
+
+So any number $x \le 10^{18}$ must have a prime factor $\le 53$.
+
+Therefore:
+\begin{itemize}
+    \item It is sufficient to check primes up to $53$
+    \item If none work, answer is $-1$
+\end{itemize}
+
+---
+
+\subsubsection{Algorithm}
+
+\begin{enumerate}
+    \item Generate all primes $\le 53$
+    \item For each prime $p$:
+    \begin{itemize}
+        \item Check if $\exists a_i$ such that $\gcd(a_i, p) = 1$
+        \item If yes, output $p$
+    \end{itemize}
+    \item If no prime satisfies the condition, output $-1$
+\end{enumerate}
+
+---
+
+\subsubsection{Time Complexity}
+
+\[
+O(\text{number of primes} \times n) \approx O(16 \cdot n)
+\]
+
+This easily fits within constraints.
+
+---
+
+% =====================================================
+\section{Prime Numbers and Factorization Techniques}
+% =====================================================
+
+\subsection{Prime Numbers}
+
+\subsubsection{Definition}
+A \textbf{prime number} is an integer greater than $1$ that has exactly two
+positive divisors:
+\[
+1 \text{ and itself}
+\]
+
+Numbers greater than $1$ that are not prime are called \textbf{composite}.
+
+
+% =====================================================
+\subsection{Primality Testing}
+% =====================================================
+
+\subsubsection{Brute Force Primality Test}
+
+\paragraph{Idea}
+Check whether $n$ is divisible by every integer from $2$ to $n-1$.
+
+\paragraph{Why It Works}
+If $n$ has a divisor other than $1$ and itself, it must appear in this range.
+
+\paragraph{Time Complexity}
+\[
+O(n)
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+bool isPrime(long long n) {
+    if (n <= 1) return false;
+    for (long long i = 2; i < n; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+\end{lstlisting}
+
+---
+
+\subsubsection{Optimization 1: Checking up to $\sqrt{n}$}
+
+\paragraph{Key Observation}
+If $n = a \cdot b$, then at least one of $a, b \le \sqrt{n}$.
+
+\paragraph{What This Improves}
+Reduces checks from $n$ to $\sqrt{n}$.
+
+\paragraph{Time Complexity}
+\[
+O(\sqrt{n})
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+bool isPrime(long long n) {
+    if (n <= 1) return false;
+    for (long long i = 2; i * i <= n; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+\end{lstlisting}
+
+---
+
+\subsubsection{Optimization 2: $6k \pm 1$ Method}
+
+\paragraph{Observation}
+All integers can be written as:
+\[
+6k,\; 6k \pm 1,\; 6k \pm 2,\; 6k + 3
+\]
+
+Numbers divisible by $2$ or $3$ are composite.
+Thus, all primes greater than $3$ are of the form $6k \pm 1$.
+
+\paragraph{Time Complexity}
+\[
+O(\sqrt{n}/6)
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+bool isPrime(long long n) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+
+    for (long long i = 5; i * i <= n; i += 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return false;
+
+    return true;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Generating All Prime Numbers up to a Limit}
+% =====================================================
+
+\subsubsection{Brute Force Method}
+
+\paragraph{Idea}
+Check primality of every number from $2$ to \texttt{limit}.
+
+\paragraph{Why It Is Slow}
+Each primality check costs $O(\sqrt{n})$.
+
+\paragraph{Time Complexity}
+\[
+O(n\sqrt{n})
+\]
+
+---
+
+\subsubsection{Optimized Method: Sieve of Eratosthenes}
+
+\paragraph{Core Idea}
+If $i$ is prime, all multiples of $i$ are composite.
+
+\paragraph{Why Start from $i^2$}
+Smaller multiples already have smaller prime factors.
+
+\paragraph{What It Gives}
+All prime numbers $\le$ \texttt{limit}.
+
+\paragraph{Time Complexity}
+\[
+O(n \log \log n)
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+vector<long long> generatePrimesUpTo(long long limit) {
+    vector<bool> isPrime(limit + 1, true);
+    vector<long long> primes;
+
+    isPrime[0] = isPrime[1] = false;
+    for (long long i = 2; i * i <= limit; i++) {
+        if (isPrime[i]) {
+            for (long long j = i * i; j <= limit; j += i)
+                isPrime[j] = false;
+        }
+    }
+
+    for (long long i = 2; i <= limit; i++)
+        if (isPrime[i]) primes.push_back(i);
+
+    return primes;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Prime Factorization of a Single Number}
+% =====================================================
+
+\subsubsection{Brute Force Factorization}
+
+\paragraph{Idea}
+Try dividing $n$ by all numbers from $2$ to $n$.
+
+\paragraph{Time Complexity}
+\[
+O(n)
+\]
+
+---
+
+\subsubsection{Optimized Prime Factorization}
+
+\paragraph{Key Observation}
+After removing all factors $\le \sqrt{n}$, at most one prime factor remains.
+
+\paragraph{Time Complexity}
+\[
+O(\sqrt{n})
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+vector<long long> primeFactorize(long long n) {
+    vector<long long> factors;
+    for (long long i = 2; i * i <= n; i++) {
+        while (n % i == 0) {
+            factors.push_back(i);
+            n /= i;
+        }
+    }
+    if (n > 1)
+        factors.push_back(n);
+    return factors;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Finding All Divisors of a Number}
+% =====================================================
+
+\subsubsection{Brute Force Method}
+
+\paragraph{Idea}
+Check all numbers from $1$ to $n$.
+
+\paragraph{Time Complexity}
+\[
+O(n)
+\]
+
+---
+
+\subsubsection{Optimized Method}
+
+\paragraph{Key Observation}
+Divisors come in pairs:
+\[
+d \cdot \frac{n}{d} = n
+\]
+
+\paragraph{Time Complexity}
+\[
+O(\sqrt{n})
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+vector<long long> getAllDivisors(long long n) {
+    vector<long long> divs;
+    for (long long i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            divs.push_back(i);
+            if (i != n / i)
+                divs.push_back(n / i);
+        }
+    }
+    sort(divs.begin(), divs.end());
+    return divs;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Finding All Divisors of All Numbers up to $N$}
+% =====================================================
+
+\subsubsection{Brute Force Idea}
+
+\paragraph{Time Complexity}
+\[
+O(N^2)
+\]
+
+---
+
+\subsubsection{Optimized Divisor Sieve}
+
+\paragraph{Key Idea}
+If $i$ divides $j$, then $i$ is a divisor of $j$.
+
+\paragraph{Time Complexity}
+\[
+O(N \log N)
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+vector<vector<long long>> allDivisorsUpToN(long long n) {
+    vector<vector<long long>> divs(n + 1);
+    for (long long i = 1; i <= n; i++)
+        for (long long j = i; j <= n; j += i)
+            divs[j].push_back(i);
+    return divs;
+}
+\end{lstlisting}
+
+% =====================================================
+\subsection{Prime Factors of All Numbers up to $N$}
+% =====================================================
+
+\subsubsection{Idea}
+If $p$ is prime, then $p$ is a prime factor of all multiples of $p$.
+
+\paragraph{What It Gives}
+Prime factor list for every number.
+
+\paragraph{Time Complexity}
+\[
+O(N \log \log N)
+\]
+
+\paragraph{Code}
+\begin{lstlisting}
+vector<vector<long long>>
+primeFactorsUpToN(long long n, const vector<long long>& primes) {
+    vector<vector<long long>> factors(n + 1);
+    for (auto p : primes)
+        for (long long j = p; j <= n; j += p)
+            factors[j].push_back(p);
+    return factors;
+}
+\end{lstlisting}
+
+% =====================================================
+\section{Smallest Prime Factor (SPF)}
+% =====================================================
+
+\subsection{What is the Smallest Prime Factor?}
+
+\subsubsection{Definition}
+For every integer $x \ge 2$, the \textbf{Smallest Prime Factor (SPF)} of $x$,
+denoted as $\text{spf}[x]$, is the smallest prime number that divides $x$.
+
+Examples:
+\[
+\text{spf}[2] = 2,\quad
+\text{spf}[6] = 2,\quad
+\text{spf}[15] = 3,\quad
+\text{spf}[17] = 17
+\]
+
+If $\text{spf}[x] = x$, then $x$ is prime.
+
+---
+
+\subsection{Why Do We Need SPF?}
+
+\subsubsection{The Problem with Earlier Methods}
+\begin{itemize}
+    \item Trial division takes $O(\sqrt{n})$ per number
+    \item Factoring many numbers becomes too slow
+    \item Repeating work across queries is inefficient
+\end{itemize}
+
+SPF solves this by \textbf{preprocessing once} and answering queries fast.
+
+---
+
+\subsection{Core Idea Behind SPF}
+
+\subsubsection{Connection with the Sieve of Eratosthenes}
+SPF is an extension of the sieve.
+
+\begin{itemize}
+    \item Initially, assume $\text{spf}[i] = i$
+    \item When a prime $i$ is found, mark it as the smallest divisor
+    \item For each multiple $j = i^2, i^2+i, \dots$:
+    \begin{itemize}
+        \item If $\text{spf}[j]$ is unset, set $\text{spf}[j] = i$
+    \end{itemize}
+\end{itemize}
+
+This ensures every number gets its smallest prime divisor.
+
+---
+
+\subsection{Why Starting from $i^2$ Works}
+
+If $j < i^2$, then:
+\[
+j = i \cdot k \quad \Rightarrow \quad k < i
+\]
+
+So $j$ would already have a smaller prime factor and its SPF would have been set earlier.
+
+---
+
+\subsection{What Does SPF Give Us?}
+
+Using SPF, we can:
+\begin{itemize}
+    \item Check if a number is prime in $O(1)$
+    \item Factorize a number in $O(\log n)$
+    \item Generate all primes up to $N$
+    \item Precompute prime factors for all numbers
+\end{itemize}
+
+---
+
+\subsection{Time and Space Complexity}
+
+\begin{itemize}
+    \item Precomputation: $O(N \log \log N)$
+    \item Space: $O(N)$
+    \item Primality check: $O(1)$
+    \item Factorization of one number: $O(\log n)$
+\end{itemize}
+
+---
+
+\subsection{SPF Construction}
+
+\subsubsection{Code}
+\begin{lstlisting}
+vector<long long> computeSPF(long long n) {
+    vector<long long> spf(n + 1);
+    for (long long i = 1; i <= n; i++)
+        spf[i] = i;
+
+    for (long long i = 2; i * i <= n; i++) {
+        if (spf[i] == i) { // i is prime
+            for (long long j = i * i; j <= n; j += i) {
+                if (spf[j] == j)
+                    spf[j] = i;
+            }
+        }
+    }
+    return spf;
+}
+\end{lstlisting}
+
+---
+
+\subsection{Applications of SPF}
+
+\subsubsection{Primality Check}
+
+\begin{lstlisting}
+bool isPrime(long long x, const vector<long long>& spf) {
+    return x >= 2 && spf[x] == x;
+}
+\end{lstlisting}
+
+---
+
+\subsubsection{Generating All Primes up to $N$}
+
+\begin{lstlisting}
+vector<long long> generatePrimes(long long n,
+                                 const vector<long long>& spf) {
+    vector<long long> primes;
+    for (long long i = 2; i <= n; i++) {
+        if (spf[i] == i)
+            primes.push_back(i);
+    }
+    return primes;
+}
+\end{lstlisting}
+
+---
+
+\subsubsection{Prime Factorization Using SPF}
+
+\begin{lstlisting}
+vector<long long> primeFactors(long long n,
+                               const vector<long long>& spf) {
+    vector<long long> factors;
+    while (n > 1) {
+        factors.push_back(spf[n]);
+        n /= spf[n];
+    }
+    return factors;
+}
+\end{lstlisting}
+
+---
+% =====================================================
+\subsection{Practice Problem: Reducing Fractions}
+% =====================================================
+
+\paragraph{Problem Link}
+\url{https://codeforces.com/contest/222/problem/C}
+
+\paragraph{Problem Summary}
+
+You are given two arrays representing the numerator and denominator of a fraction.
+Each array element contributes multiplicatively.
+
+Your task is to \textbf{reduce the fraction} by cancelling common prime factors
+between the numerator and denominator, and output the reduced form.
+
+The constraints allow values up to $10^7$ and many numbers must be factorized.
+
+---
+
+\subsubsection{Core Observation}
+
+Reduction of a fraction depends only on \textbf{prime factor counts}.
+
+For each prime $p$:
+\begin{itemize}
+    \item Let $a_p$ = total exponent of $p$ in the numerator
+    \item Let $b_p$ = total exponent of $p$ in the denominator
+\end{itemize}
+
+After reduction:
+\[
+\text{new } a_p = a_p - \min(a_p, b_p),
+\quad
+\text{new } b_p = b_p - \min(a_p, b_p)
+\]
+
+So the problem becomes:
+\begin{itemize}
+    \item Efficiently factorize many numbers
+    \item Maintain prime exponent counts
+    \item Reconstruct reduced numbers
+\end{itemize}
+
+---
+
+% =====================================================
+\subsubsection{Approach 1: Using Smallest Prime Factor (Recommended)}
+% =====================================================
+
+\subsubsubsection{Idea}
+
+\begin{itemize}
+    \item Precompute the \textbf{Smallest Prime Factor (SPF)} for all numbers up to $10^7$
+    \item Factorize each number in $O(\log n)$ using SPF
+    \item Accumulate prime exponent counts for numerator and denominator
+    \item Cancel common prime powers
+    \item Rebuild the reduced arrays
+\end{itemize}
+
+\subsubsubsection{Why This Works Well}
+
+\begin{itemize}
+    \item SPF allows factorization by repeatedly dividing by the smallest prime
+    \item Each division strictly reduces the number
+    \item Total operations per number are proportional to the number of prime factors
+\end{itemize}
+
+\subsubsubsection{Time Complexity}
+
+\[
+\text{Preprocessing: } O(N \log \log N)
+\]
+\[
+\text{Factorization: } O(\log n) \text{ per number}
+\]
+
+This approach is fast, scalable, and safe for tight constraints.
+
+---
+
+% =====================================================
+\subsubsection{Approach 2: Without SPF (Trial Division)}
+% =====================================================
+
+\subsubsubsection{Idea}
+
+\begin{itemize}
+    \item Generate all primes up to $\sqrt{10^7}$
+    \item Factorize each number by trying division with all primes
+    \item Accumulate and cancel prime exponents
+\end{itemize}
+
+\subsubsubsection{Why It Is Slower}
+
+\begin{itemize}
+    \item Trial division may check many primes for each number
+    \item Worst-case factorization takes $O(\sqrt{n})$
+    \item Repeated work across many elements
+\end{itemize}
+
+\subsubsubsection{Time Complexity}
+
+\[
+\text{Prime generation: } O(N \log \log N)
+\]
+\[
+\text{Factorization: } O(\sqrt{n}) \text{ per number}
+\]
+
+This approach can pass, but is close to time limits.
+
+---
+
+% =====================================================
+\subsubsection{Comparison of Approaches}
+% =====================================================
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Aspect} & \textbf{SPF-Based} & \textbf{Trial Division} \\
+\hline
+Accepted & Yes & Yes \\
+\hline
+Factorization Time & $O(\log n)$ & $O(\sqrt{n})$ \\
+\hline
+Speed & Fast & Slower \\
+\hline
+Memory Usage & Higher & Lower \\
+\hline
+Ease of Implementation & Moderate & Simple \\
+\hline
+Recommended & \textbf{Yes} & Only for small limits \\
+\hline
+\end{tabular}
+\end{center}
+
+---
+
+% =====================================================
+\section{Combinatorics}
+% =====================================================
+
+% =====================================================
+\subsection{Factorials}
+% =====================================================
+
+\subsubsection{Definition}
+\[
+n! = 1 \cdot 2 \cdot 3 \cdots n
+\]
+
+---
+
+% =====================================================
+\subsection{Precomputation of Factorials}
+% =====================================================
+
+\subsubsection{Why Precompute}
+Many problems require repeated computation of combinations and permutations.
+Precomputing factorials avoids recomputation and makes queries efficient.
+
+\subsubsection{Complexity}
+\[
+O(N) \text{ time}, \quad O(N) \text{ space}
+\]
+
+\subsubsection{Code}
+\begin{lstlisting}
+vector<long long> computeFactorials(int n, long long mod) {
+    vector<long long> fact(n + 1);
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++)
+        fact[i] = fact[i - 1] * i % mod;
+    return fact;
+}
+\end{lstlisting}
+
+---
+
+% =====================================================
+\subsection{Precomputation of Inverse Factorials}
+% =====================================================
+
+\subsubsection{Why Inverse Factorials Are Needed}
+
+To compute combinations using:
+\[
+\binom{n}{r} = \frac{n!}{r!(n-r)!}
+\]
+
+we need inverses of factorial values.
+
+A naive approach would compute:
+\[
+(r!)^{-1},\; ((n-r)!)^{-1}
+\]
+for every query.
+
+---
+
+\subsubsection{Why Precomputing Inverse Factorials Is Better}
+
+\paragraph{Naive Approach}
+\begin{itemize}
+    \item Factorials are precomputed
+    \item For every query, compute inverse of $r!$ and $(n-r)!$
+    \item Each inverse costs $O(\log mod)$
+\end{itemize}
+
+\paragraph{Total Cost}
+For $Q$ queries:
+\[
+O(Q \log mod)
+\]
+
+---
+
+\paragraph{Optimized Approach}
+\begin{itemize}
+    \item Compute inverse of $n!$ once
+    \item Use the relation:
+    \[
+    (i-1)!^{-1} = i!^{-1} \cdot i
+    \]
+    \item Build all inverse factorials in linear time
+\end{itemize}
+
+\paragraph{Total Cost}
+\[
+O(N + \log mod) \text{ preprocessing}
+\]
+\[
+O(1) \text{ per query}
+\]
+
+This is significantly faster when there are many queries.
+
+---
+
+\subsubsection{Code}
+\begin{lstlisting}
+vector<long long> computeInverseFactorials(
+    int n, long long mod, const vector<long long>& fact) {
+
+    vector<long long> ifact(n + 1);
+    ifact[n] = modpow(fact[n], mod - 2, mod);
+
+    for (int i = n - 1; i >= 0; i--)
+        ifact[i] = ifact[i + 1] * (i + 1) % mod;
+
+    return ifact;
+}
+\end{lstlisting}
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Christmas Tree Decoration}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{D. Christmas Tree Decoration}
+
+\paragraph{Link}
+\url{https://codeforces.com/problemset/problem/2190/D}
+
+\paragraph{Problem Summary}
+
+There are $n$ people and $(n+1)$ boxes of decorations.
+Box $0$ is a shared box, while box $i$ belongs to person $i$.
+
+People act in a given permutation order:
+each person must take one decoration either from their own box or from box $0$.
+This process repeats cyclically until all decorations are used.
+
+A permutation is called \textbf{fair} if it is possible to finish the process
+without ever encountering a situation where a person needs to take a decoration
+but both box $0$ and their own box are empty.
+
+Your task is to count the number of fair permutations.
+
+---
+
+\subsubsection{Key Observation}
+
+Each person $i$ can safely act as long as:
+\begin{itemize}
+    \item They still have decorations in their own box, or
+    \item Box $0$ has decorations left
+\end{itemize}
+
+This creates a global dependency on:
+\begin{itemize}
+    \item The total number of decorations
+    \item How many people are forced to rely on box $0$
+\end{itemize}
+
+The order in which people appear matters, but the process can be analyzed
+by grouping people based on how many times they must draw from box $0$.
+
+---
+
+\subsubsection{Core Idea}
+
+\begin{itemize}
+    \item Think in terms of \textbf{how many times each person needs help from box $0$}
+    \item The process is valid if box $0$ never runs out before all forced usages are satisfied
+    \item The problem reduces to counting permutations where these constraints hold
+\end{itemize}
+
+This transforms the problem into a \textbf{counting permutations with restrictions},
+which is a classic combinatorics setup.
+
+---
+
+\subsubsection{Approach}
+
+\begin{enumerate}
+    \item Count how many decorations must come from box $0$
+    \item Determine how many people are \emph{forced} to rely on box $0$
+    \item Count the number of permutations where these people appear
+          in an order that never exhausts box $0$
+    \item Use combinations and factorials to count valid arrangements
+\end{enumerate}
+
+All counting is done modulo $998244353$.
+
+---
+
+
+% =====================================================
+\subsection{Computing $nCr$ and $nPr$ Using Precomputed Arrays}
+% =====================================================
+
+\subsubsection{$nCr$}
+\[
+\binom{n}{r} = \frac{n!}{r!(n-r)!}
+\]
+
+\begin{lstlisting}
+long long nCr(int n, int r,
+              const vector<long long>& fact,
+              const vector<long long>& ifact,
+              long long mod) {
+    if (r < 0 || r > n) return 0;
+    return fact[n] * ifact[r] % mod * ifact[n - r] % mod;
+}
+\end{lstlisting}
+
+\subsubsection{Time Complexity}
+\[
+O(1)
+\]
+
+---
+
+\subsubsection{$nPr$}
+\[
+P(n,r) = \frac{n!}{(n-r)!}
+\]
+
+\begin{lstlisting}
+long long nPr(int n, int r,
+              const vector<long long>& fact,
+              const vector<long long>& ifact,
+              long long mod) {
+    if (r < 0 || r > n) return 0;
+    return fact[n] * ifact[n - r] % mod;
+}
+\end{lstlisting}
+
+---
+
+% =====================================================
+\subsection{Computing $nCr$ Without Precomputation}
+% =====================================================
+
+\subsubsection{Idea}
+Use the multiplicative form of combinations:
+\[
+\binom{n}{r}
+=
+\frac{n(n-1)(n-2)\cdots(n-r+1)}{r!}
+\]
+
+Always compute with:
+\[
+r = \min(r, n-r)
+\]
+
+---
+
+\subsubsection{Code}
+\begin{lstlisting}
+long long nCr(int n, int r) {
+    if (r < 0 || r > n) return 0;
+    r = min(r, n - r);
+
+    long long res = 1;
+    for (int i = 1; i <= r; i++) {
+        res = res * (n - r + i) / i;
+    }
+    return res;
+}
+\end{lstlisting}
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Unfair Game}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{D. Unfair Game}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2162/problem/D}
+
+\paragraph{Problem Summary}
+
+Bob chooses a number $a$ from $1$ to $n$, where $n = 2^d$.
+Alice can repeatedly:
+\begin{itemize}
+    \item Divide the number by $2$ if it is even, or
+    \item Subtract $1$
+\end{itemize}
+
+After each move, Alice learns the exponent of the largest power of $2$
+dividing the current number.
+
+Alice wants to reach $0$ within at most $k$ moves.
+Your task is to count how many starting numbers Alice \textbf{cannot} win from
+within $k$ moves, assuming optimal play.
+
+---
+
+\subsubsection{Key Observation}
+
+For any number $a > 0$, there exists a unique value:
+\[
+x = v_2(a)
+\]
+such that:
+\[
+a \equiv 0 \pmod{2^x}, \quad a \not\equiv 0 \pmod{2^{x+1}}
+\]
+
+This is exactly the number of trailing zeros in the binary representation of $a$.
+
+---
+
+\subsubsection{Core Idea}
+
+\begin{itemize}
+    \item Each division by $2$ removes one trailing zero
+    \item Subtracting $1$ turns an odd number into an even one
+    \item The total number of moves needed depends only on the binary structure of $a$
+\end{itemize}
+
+Thus, the game reduces to:
+\begin{itemize}
+    \item Analyzing binary lengths
+    \item Counting how many numbers have a given number of trailing zeros
+\end{itemize}
+
+---
+
+\subsubsection{Why Combinations Appear}
+
+Numbers from $1$ to $2^d$ can be classified by:
+\begin{itemize}
+    \item Total bit length
+    \item Positions of $1$ bits
+\end{itemize}
+
+Counting how many numbers fall into each category involves:
+\[
+\binom{d}{k}
+\]
+
+This allows us to count valid starting numbers using combinations,
+without needing factorial precomputation due to small effective ranges.
+
+---
+
+\subsubsection{Approach}
+
+\begin{enumerate}
+    \item Let $d = \log_2(n)$
+    \item Iterate over possible binary lengths
+    \item For each length, count numbers requiring more than $k$ moves
+    \item Use $nCr$ to count configurations efficiently
+\end{enumerate}
+
+All calculations are done using direct multiplicative $nCr$.
+
+---
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Production of Snowmen}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{C. Production of Snowmen}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2182/problem/C}
+
+\paragraph{Problem Summary}
+
+You are given three cyclic arrays:
+\[
+A = (a_1,\dots,a_n),\;
+B = (b_1,\dots,b_n),\;
+C = (c_1,\dots,c_n)
+\]
+
+A snowman is \textbf{stable} if:
+\[
+a < b < c
+\]
+
+You must choose starting indices $(i, j, k)$ such that for every shift
+$t = 0 \dots n-1$:
+\[
+a_{i+t} < b_{j+t} < c_{k+t}
+\]
+
+The task is to count how many such triples $(i,j,k)$ exist.
+
+---
+
+\subsubsection{Key Observation}
+
+Because the conveyors are \textbf{cyclic}, once $(i,j,k)$ is chosen:
+\begin{itemize}
+    \item All comparisons are shift-invariant
+    \item Only relative alignment matters, not absolute position
+\end{itemize}
+
+Thus, the problem reduces to checking consistency of inequalities
+across all $n$ positions.
+
+---
+
+\subsubsection{Reformulation}
+
+For a fixed offset alignment:
+\[
+(a_x, b_y, c_z)
+\]
+
+we need:
+\[
+\forall t:\quad
+a_{x+t} < b_{y+t} \;\text{and}\; b_{y+t} < c_{z+t}
+\]
+
+This splits into two independent conditions:
+\begin{itemize}
+    \item Valid alignments of $A$ with $B$
+    \item Valid alignments of $B$ with $C$
+\end{itemize}
+
+---
+
+\subsubsection{Counting Strategy}
+
+\begin{itemize}
+    \item Precompute all valid cyclic shifts where $a_i < b_j$
+    \item Precompute all valid cyclic shifts where $b_j < c_k$
+    \item Combine compatible shifts using counting
+\end{itemize}
+
+Each valid configuration contributes multiplicatively.
+
+---
+
+% =====================================================
+\subsection{Binomial Theorem}
+% =====================================================
+
+\subsubsection{Statement}
+\[
+(a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k
+\]
+
+\subsubsection{General Term}
+\[
+T_{k+1} = \binom{n}{k} a^{n-k} b^k
+\]
+
+\subsubsection{Finding Coefficients}
+\begin{itemize}
+    \item Coefficient of $a^{n-k}b^k$: $\binom{n}{k}$
+    \item Coefficient of $x^k$ in $(ax+b)^n$: $\binom{n}{k}a^k b^{n-k}$
+\end{itemize}
+
+---
+
+% =====================================================
+\subsection{Stars and Bars}
+% =====================================================
+
+\subsubsection{Problem Statement}
+Count the number of non-negative integer solutions to:
+\[
+x_1 + x_2 + \cdots + x_n = k
+\]
+
+---
+
+\subsubsection{Intuition}
+
+Represent $k$ identical objects as stars:
+\[
+\star \star \star \cdots \star
+\]
+
+To divide them into $n$ groups, place $n-1$ bars between stars.
+Each distinct arrangement corresponds to a unique solution.
+
+---
+
+\subsubsection{Formula}
+\[
+\boxed{\binom{n + k - 1}{k}}
+\]
+
+---
+
+\subsubsection{Why This Works}
+\begin{itemize}
+    \item Total positions: $k + n - 1$
+    \item Choose $k$ positions for stars
+    \item Remaining positions are bars
+\end{itemize}
+
+---
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Stars \& Bars}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 1288C — Two Arrays}
+
+\paragraph{Link}
+\url{https://codeforces.com/problemset/problem/1288/C}
+
+\paragraph{Core Idea}
+
+The problem asks for the number of ways to build an array with fixed sum
+constraints on all prefixes and total sum.
+
+Key combinatorial insight:
+\begin{itemize}
+    \item You are effectively distributing a fixed total sum across positions
+    \item Each prefix has a minimum required sum
+    \item This leads to counting integer solutions with lower bounds
+\end{itemize}
+
+This is a typical **Stars and Bars with constraints** scenario, where
+we adjust variables to account for minimum sums, then apply standard counting.
+
+\paragraph{Why It Fits}
+
+Stars and Bars solves counts of non-negative integer solutions:
+\[
+x_1 + x_2 + \cdots + x_n = k
+\]
+But when there are **prefix minimum constraints**, you:
+\begin{itemize}
+    \item shift variables to remove lower bounds
+    \item transform into a standard root counting problem
+    \item apply combination formulas accordingly
+\end{itemize}
+
+---
+
+% =====================================================
+\section{Probability and Expectation}
+% =====================================================
+
+\subsection{Probability Basics}
+
+\subsubsection{Definition}
+\[
+P(A) = \frac{\text{favorable outcomes}}
+             {\text{total outcomes}}
+\]
+
+In competitive programming:
+\[
+P \equiv \text{favorable} \times inv(\text{total}) \pmod{mod}
+\]
+
+---
+
+\subsection{Probability Under Modulo}
+
+Division is replaced by modular inverse:
+\[
+\frac{a}{b} \equiv a \cdot b^{mod-2} \pmod{mod}
+\]
+
+---
+
+\subsection{Conditional Probability}
+
+\[
+P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+\]
+
+Used when outcomes depend on previous events.
+
+---
+
+\subsection{Independent Events}
+
+Events $A$ and $B$ are independent if:
+\[
+P(A \cap B) = P(A) \cdot P(B)
+\]
+
+---
+
+\subsection{Expected Value}
+
+\subsubsection{Definition}
+\[
+\mathbb{E}[X] = \sum x \cdot P(X = x)
+\]
+
+---
+
+\subsection{Linearity of Expectation}
+
+\[
+\mathbb{E}[X_1 + X_2 + \cdots + X_n]
+=
+\sum_{i=1}^{n} \mathbb{E}[X_i]
+\]
+
+---
+
+\subsection{Probability DP}
+
+\[
+dp[i] = \sum dp[j] \cdot P(j \rightarrow i)
+\]
+
+---
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Probability)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2125D — Segments Covering}
+
+\paragraph{Link}
+\url{https://codeforces.com/problemset/problem/2125/D}
+
+\paragraph{Goal}
+Compute the probability that \textbf{each cell is covered by exactly one segment},
+where each segment exists independently with probability $\frac{p_i}{q_i}$.
+
+\subsubsection{Key Probability Transformation}
+
+For each segment with probability
+\[
+P_i = \frac{p_i}{q_i},
+\]
+rewrite it as:
+\[
+P_i = (1 - P_i) \cdot \frac{P_i}{1 - P_i}.
+\]
+
+This allows the total probability to be expressed as:
+\[
+\left( \prod_i (1 - P_i) \right)
+\cdot
+\left( \sum \text{valid configurations using } \frac{P_i}{1 - P_i} \right).
+\]
+
+\begin{itemize}
+    \item The product term accounts for all segments initially being inactive
+    \item The summation term activates exactly one valid segment per cell
+\end{itemize}
+
+\subsubsection{DP Interpretation}
+
+\begin{itemize}
+    \item Segments are grouped by their right endpoint
+    \item Each segment contributes a weight:
+    \[
+    w_i = \frac{P_i}{1 - P_i}
+    \]
+    \item A suffix DP is computed from right to left
+    \item DP ensures that:
+    \begin{itemize}
+        \item exactly one segment covers each cell
+        \item overlapping segments are handled without double counting
+    \end{itemize}
+\end{itemize}
+
+The DP value at position $i$ represents the total contribution of valid
+segment selections covering suffix $[i, m-1]$.
+
+\subsubsection{Why Reverse (Suffix) DP Works}
+
+Processing from right to left ensures:
+\begin{itemize}
+    \item each segment contributes only to the cells it covers
+    \item overlapping probabilities are merged correctly
+    \item independence between segments is preserved algebraically
+\end{itemize}
+
+This avoids explicit enumeration of cells or subsets.
+
+\subsubsection{Final Formula}
+
+The final probability is:
+\[
+\text{Answer} =
+\left( \prod_i (1 - P_i) \right)
+\cdot
+\text{DP}[0]
+\pmod{998244353}.
+\]
+
+\subsubsection{Complexity}
+
+\begin{itemize}
+    \item Time Complexity: $O(n + m)$
+    \item Space Complexity: $O(n + m)$
+\end{itemize}
+
+
+% =====================================================
+\section{Series and Summations}
+% =====================================================
+
+\subsection{Arithmetic Progression (AP)}
+
+\subsubsection{Nth Term}
+\[
+a_n = a + (n-1)d
+\]
+
+\subsubsection{Sum of First $n$ Terms}
+\[
+S_n = \frac{n}{2} (2a + (n-1)d)
+\]
+
+\subsubsection{Special Case}
+\[
+1 + 2 + \cdots + n = \frac{n(n+1)}{2}
+\]
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Arithmetic Progression)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 1616C — Representative Edges}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/1616/problem/C}
+
+\paragraph{Key Observation}
+An array is an arithmetic progression if and only if there exist constants
+$a$ and $d$ such that:
+\[
+a_i = a + i \cdot d
+\]
+
+Equivalently, for any two indices $i < j$:
+\[
+d = \frac{a_j - a_i}{j - i}
+\]
+
+---
+
+\paragraph{Approach}
+\begin{itemize}
+    \item Fix two indices $(i, j)$ to uniquely determine the common difference $d$
+    \item This fixes the entire arithmetic progression
+    \item For all positions $k$, check whether:
+    \[
+    a_k = a_i + (k - i)\cdot d
+    \]
+    \item Count how many elements already match this AP
+    \item Minimum operations $=$ total elements $-$ maximum matches
+\end{itemize}
+
+---
+
+\subsection{Geometric Progression (GP)}
+
+\subsubsection{Nth Term}
+\[
+a_n = a r^{n-1}
+\]
+
+\subsubsection{Sum ($r \neq 1$)}
+\[
+S_n = a \cdot \frac{r^n - 1}{r - 1}
+\]
+
+\subsubsection{Infinite GP ($|r| < 1$)}
+\[
+S = \frac{a}{1-r}
+\]
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Geometric Progression)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2182B — New Year Cake}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2182/problem/B}
+
+\paragraph{Key Observation}
+The sizes of cake layers follow a geometric progression:
+\[
+1,\; 2,\; 4,\; 8,\; \dots
+\]
+Each layer is twice the size of the layer above.
+
+Additionally:
+\begin{itemize}
+    \item Chocolate types must alternate
+    \item The amount of chocolate required for a layer equals its size
+\end{itemize}
+
+---
+
+\paragraph{Approach}
+\begin{itemize}
+    \item Consider two cases:
+    \begin{itemize}
+        \item Top layer starts with white chocolate
+        \item Top layer starts with dark chocolate
+    \end{itemize}
+    \item For a fixed number of layers $k$:
+    \begin{itemize}
+        \item Sum the GP terms assigned to white layers
+        \item Sum the GP terms assigned to dark layers
+    \end{itemize}
+    \item Check whether both sums fit within available chocolate
+    \item Maximize $k$
+\end{itemize}
+
+---
+
+\subsection{Common Summation Formulas}
+
+\[
+\sum_{i=1}^n i^2 = \frac{n(n+1)(2n+1)}{6}
+\]
+
+\[
+\sum_{i=1}^n i^3 = \left( \frac{n(n+1)}{2} \right)^2
+\]
+
+---
+
+\subsection{Telescoping Series}
+
+\subsubsection{Definition}
+A series where most terms cancel out.
+
+\subsubsection{Example}
+\[
+\sum_{k=1}^n \left( \frac{1}{k} - \frac{1}{k+1} \right)
+= 1 - \frac{1}{n+1}
+\]
+
+---
+
+\subsubsection{General Form}
+If:
+\[
+a_k = f(k) - f(k+1)
+\]
+
+Then:
+\[
+\sum_{k=1}^n a_k = f(1) - f(n+1)
+\]
+
+---
+
+% =====================================================
+\subsection{Prefix Sums}
+% =====================================================
+
+\subsubsection{Definition}
+
+Given an array:
+\[
+a_1, a_2, \dots, a_n
+\]
+
+The \textbf{prefix sum array} is defined as:
+\[
+p_i = a_1 + a_2 + \cdots + a_i
+\]
+with:
+\[
+p_0 = 0
+\]
+
+---
+
+\subsubsection{Why Prefix Sums Work}
+
+Using prefix sums, any subarray sum can be computed in constant time:
+\[
+\sum_{i=l}^{r} a_i = p_r - p_{l-1}
+\]
+
+This converts repeated summation from:
+\[
+O(n) \rightarrow O(1)
+\]
+
+after a single preprocessing step.
+
+---
+
+\subsubsection{Time and Space Complexity}
+
+\begin{itemize}
+    \item Preprocessing: $O(n)$
+    \item Each range query: $O(1)$
+    \item Extra space: $O(n)$
+\end{itemize}
+
+---
+
+% =====================================================
+\subsection{Prefix XOR}
+% =====================================================
+
+\subsubsection{Definition}
+
+For bitwise XOR:
+\[
+px_i = a_1 \oplus a_2 \oplus \cdots \oplus a_i
+\]
+
+with:
+\[
+px_0 = 0
+\]
+
+---
+
+\subsubsection{Key Property}
+
+Using XOR:
+\[
+a_l \oplus a_{l+1} \oplus \cdots \oplus a_r
+=
+px_r \oplus px_{l-1}
+\]
+
+This works because:
+\[
+x \oplus x = 0
+\]
+
+---
+
+% -----------------------------------------------------
+\subsubsection{Practice Problem (Prefix XOR Construction)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2175B — XOR Array}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2175/problem/B}
+
+\paragraph{Problem Insight}
+
+The XOR of a subarray can be expressed using prefix XOR:
+\[
+a_l \oplus a_{l+1} \oplus \cdots \oplus a_r
+=
+px_r \oplus px_{l-1}
+\]
+
+Thus, enforcing XOR conditions on subarrays translates into constraints
+on prefix XOR values.
+
+---
+
+\paragraph{Core Idea}
+
+The problem requires:
+\begin{itemize}
+    \item Exactly one subarray $(l, r)$ whose XOR is $0$
+    \item All other subarrays must have non-zero XOR
+\end{itemize}
+
+Using prefix XOR:
+\[
+px_r = px_{l-1}
+\]
+must hold for exactly one pair of indices, and all other prefix XOR pairs
+must be distinct.
+
+---
+
+\paragraph{Construction Strategy}
+
+\begin{itemize}
+    \item Assign prefix XORs such that:
+    \begin{itemize}
+        \item $px_{l-1} = px_r$
+        \item All other prefix XOR values are unique
+    \end{itemize}
+    \item Build the array using:
+    \[
+    a_i = px_i \oplus px_{i-1}
+    \]
+\end{itemize}
+
+This guarantees:
+\begin{itemize}
+    \item XOR of subarray $(l, r)$ is $0$
+    \item No other subarray XOR becomes $0$
+\end{itemize}
+
+---
+
+
+\subsection{Suffix Sums and XOR}
+% =====================================================
+
+\subsubsection{Definition}
+
+\textbf{Suffix Sum} is defined as:
+\[
+s_i = a_i + a_{i+1} + \cdots + a_n
+\]
+
+\textbf{Suffix XOR} is defined as:
+\[
+sx_i = a_i \oplus a_{i+1} \oplus \cdots \oplus a_n
+\]
+
+Suffix sums and suffix XOR work in the same way as prefix sums and prefix XOR,
+but are computed from the end of the array instead of the beginning.
+
+\subsubsection{Relation with Prefix Arrays}
+
+If $p_i$ is the prefix sum and $px_i$ is the prefix XOR, then:
+\[
+s_i = p_n - p_{i-1}
+\]
+
+\[
+sx_i = px_n \oplus px_{i-1}
+\]
+
+---
+
+% =====================================================
+\section{Pigeonhole Principle}
+% =====================================================
+
+\subsection{Statement}
+
+\subsubsection{Basic Form}
+If more than $n$ objects are placed into $n$ boxes, then at least one box
+contains more than one object.
+
+Formally:
+\[
+\text{If } k > n \text{ objects are distributed into } n \text{ boxes,}
+\Rightarrow \exists \text{ a box with at least } 2 \text{ objects.}
+\]
+
+---
+
+\subsubsection{Generalized Form}
+If $k$ objects are placed into $n$ boxes, then at least one box contains at least:
+\[
+\left\lceil \frac{k}{n} \right\rceil
+\]
+objects.
+
+---
+
+\subsection{Why This Works (Intuition)}
+
+Assume the opposite:
+\begin{itemize}
+    \item Every box contains at most $\left\lfloor \frac{k}{n} \right\rfloor$ objects
+    \item Then total objects $\le n \cdot \left\lfloor \frac{k}{n} \right\rfloor < k$
+\end{itemize}
+
+This contradicts the assumption that $k$ objects exist.
+
+Hence, the principle must hold.
+
+---
+
+\subsection{Simple Examples}
+
+\subsubsection{Example 1}
+Among 13 people, at least two people have birthdays in the same month.
+
+\paragraph{Explanation}
+\begin{itemize}
+    \item Objects: 13 people
+    \item Boxes: 12 months
+    \item Since $13 > 12$, some month has at least 2 birthdays
+\end{itemize}
+
+---
+
+\subsubsection{Example 2}
+If 11 integers are chosen from $\{1,2,\dots,10\}$, at least one number is repeated.
+
+---
+
+\subsection{Classic CP Use Case}
+
+\paragraph{Subarray Sum Divisible by $n$}
+
+Given an array of length $n$, consider prefix sums modulo $n$:
+\[
+p_i = (a_1 + a_2 + \cdots + a_i) \bmod n
+\]
+
+There are $n+1$ values:
+\[
+p_0, p_1, \dots, p_n
+\]
+
+But only $n$ possible remainders.
+
+By the Pigeonhole Principle:
+\begin{itemize}
+    \item Either some $p_i = 0$
+    \item Or two prefix sums are equal
+\end{itemize}
+
+In both cases, a subarray with sum divisible by $n$ exists.
+
+---
+% -----------------------------------------------------
+\subsection{Practice Problem (Pigeonhole Principle)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2120D — Matrix Game}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2120/problem/D}
+
+\paragraph{Main Idea}
+
+Each cell of the matrix can take one of $k$ values.
+Harshith tries to avoid creating an $a \times b$ submatrix with all equal elements.
+
+\begin{itemize}
+    \item Consider all possible placements of values in the matrix
+    \item The number of submatrices of size $a \times b$ grows with $n$ and $m$
+    \item The number of distinct value patterns Harshith can enforce is limited by $k$
+\end{itemize}
+
+When the matrix becomes large enough, the number of required configurations
+exceeds the number of distinct value choices.
+
+By the \textbf{Pigeonhole Principle}, some $a \times b$ submatrix must have
+all equal elements, guaranteeing Aryan’s win.
+
+\paragraph{Approach}
+
+\begin{itemize}
+    \item Observe that Harshith controls the matrix values, but each cell can take
+    only one of $k$ distinct values
+    \item Aryan wins if there exists an $a \times b$ submatrix with all equal values
+    \item Count the number of distinct $a \times b$ submatrices in an $n \times m$ matrix
+    \item Compare this with the maximum number of distinct value assignments Harshith
+    can use to avoid repetition
+\end{itemize}
+
+Once the number of required submatrices exceeds the number of distinct patterns
+possible using $k$ values, avoiding repetition becomes impossible.
+
+By the \textbf{Pigeonhole Principle}, at least one $a \times b$ submatrix
+must have all elements equal, and Aryan is guaranteed to win.
+
+
+\paragraph{Key Insight}
+
+This is an extremal construction problem:
+\begin{itemize}
+    \item If objects (submatrices) $>$ boxes (distinct value patterns)
+    \item Then repetition is unavoidable
+\end{itemize}
+
+The task is to find the smallest $(n,m)$ where this inevitability occurs.
+
+% =====================================================
+\section{Basic Geometry for Competitive Programming}
+% =====================================================
+
+\subsection{Distance Between Two Points}
+
+Let two points be:
+\[
+A(x_1, y_1), \quad B(x_2, y_2)
+\]
+
+---
+
+\subsubsection{Euclidean Distance}
+
+\paragraph{Formula}
+\[
+d = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
+\]
+
+\paragraph{Important Trick}
+Instead of comparing distances, compare \textbf{squared distances}:
+\[
+(x_1 - x_2)^2 + (y_1 - y_2)^2
+\]
+to avoid floating-point inaccuracies.
+
+---
+
+\subsubsection{Manhattan Distance}
+
+\paragraph{Formula}
+\[
+d = |x_1 - x_2| + |y_1 - y_2|
+\]
+
+\paragraph{Interpretation}
+Distance when movement is restricted to horizontal and vertical steps.
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Geometry)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2119B — Line Segments}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2119/problem/B}
+
+\paragraph{Main Idea}
+
+Each move allows you to travel \emph{exactly} a fixed distance, but in any direction.
+Thus, after all operations, the question reduces to whether the final point can be
+reached using segments of given lengths.
+
+Let:
+\begin{itemize}
+    \item $D$ be the Euclidean distance between the start and end points
+    \item $S = a_1 + a_2 + \cdots + a_n$ be the total available movement
+    \item $M = \max(a_1, a_2, \ldots, a_n)$ be the largest single move
+\end{itemize}
+
+\paragraph{Approach}
+
+Using the triangle inequality:
+\begin{itemize}
+    \item The farthest reachable distance is $S$
+    \item The closest reachable distance is $\max(0,\, 2M - S)$
+\end{itemize}
+
+Reaching the target point is possible if and only if:
+\[
+\max(0,\, 2M - S) \le D \le S
+\]
+
+\paragraph{Why It Works}
+
+Each move can be rotated arbitrarily, so only the total length and imbalance between
+segments matters. This is a direct application of geometric feasibility using
+triangle inequality constraints.
+---
+
+% =====================================================
+\section{Basic Statistics}
+% =====================================================
+
+\subsection{Mean}
+
+\subsubsection{Definition}
+\[
+\text{Mean} = \frac{x_1 + x_2 + \cdots + x_n}{n}
+\]
+
+\subsubsection{Uses}
+\begin{itemize}
+    \item Expected value problems
+    \item Average operations
+    \item Probability calculations
+\end{itemize}
+
+---
+
+\subsection{Median}
+
+\subsubsection{Definition}
+The median is the middle element after sorting the array.
+
+\begin{itemize}
+    \item If $n$ is odd: element at position $\frac{n}{2}$
+    \item If $n$ is even: any value between the two middle elements
+\end{itemize}
+
+---
+
+\subsubsection{Key Property}
+The median minimizes:
+\[
+\sum |x_i - m|
+\]
+
+This makes it extremely important in optimization problems.
+---
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Median)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2149D — A and B}
+
+\paragraph{Link}
+\url{https://codeforces.com/contest/2149/problem/D}
+
+\paragraph{Main Idea}
+
+We want all characters of one type (either all \texttt{a} or all \texttt{b})
+to form a single contiguous block using the minimum number of adjacent swaps.
+
+This is equivalent to:
+\begin{itemize}
+    \item Fixing a target block of consecutive positions
+    \item Moving all chosen characters into this block
+    \item Minimizing the total number of swaps (movement distance)
+\end{itemize}
+
+\paragraph{Key Observation}
+
+Adjacent swaps correspond to \textbf{absolute movement cost}.
+Thus, minimizing swaps is the same as minimizing:
+\[
+\sum |pos_i - target_i|
+\]
+
+This sum is minimized when the block is centered at the \textbf{median}
+of the chosen character positions.
+
+\paragraph{Approach}
+
+\begin{itemize}
+    \item Collect indices of all \texttt{a}'s (or all \texttt{b}'s)
+    \item Assume they form a contiguous block
+    \item Align them to consecutive positions
+    \item The optimal alignment is achieved by placing the block around the median
+    \item Compute total movement cost
+    \item Do this for both characters and take the minimum
+\end{itemize}
+
+\paragraph{Why It Works}
+
+The median minimizes the sum of absolute differences.
+Since each adjacent swap shifts a character by one position,
+the total number of swaps is minimized by median alignment.
+
+% -----------------------------------------------------
+\subsection{Practice Problem (Median \& Manhattan Distance)}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{CF 2122C — Manhattan Pairs}
+
+\paragraph{Link}
+\url{https://codeforces.com/problemset/problem/2122/C}
+
+\paragraph{Main Idea}
+
+We are given $n$ points on a 2D plane ($n$ is even), and must form $\frac{n}{2}$
+disjoint pairs to \textbf{maximize the total Manhattan distance}:
+\[
+\sum |x_a - x_b| + |y_a - y_b|
+\]
+
+The key observation is that Manhattan distance is separable across dimensions,
+and optimal pairing is achieved by pairing \textbf{far-apart points}.
+
+\paragraph{Key Observations}
+
+\begin{itemize}
+    \item Sorting points by $x$ separates them spatially
+    \item Pairing smallest $x$ with largest $x$ maximizes $|x_a - x_b|$
+    \item After fixing $x$ separation, pairing extremes in $y$ further
+          maximizes $|y_a - y_b|$
+    \item This mirrors the idea that distance is maximized when elements are
+          placed on opposite sides of the median
+\end{itemize}
+
+\paragraph{Greedy Strategy}
+
+\begin{itemize}
+    \item Sort all points by $x$
+    \item Split into two halves:
+    \begin{itemize}
+        \item Left half = smaller $x$
+        \item Right half = larger $x$
+    \end{itemize}
+    \item Sort both halves by $y$
+    \item Pair:
+    \[
+        \text{left}[i] \;\; \text{with} \;\; \text{right}[\tfrac{n}{2}-1-i]
+    \]
+    \item This pairs smallest $y$ with largest $y$, maximizing vertical distance
+\end{itemize}
+
+\paragraph{Why This Works}
+
+For Manhattan distance:
+\[
+|x_1 - x_2| + |y_1 - y_2|
+\]
+both components are maximized independently by pairing elements symmetrically
+around their medians.
+
+---
+
+\subsection{Mode}
+
+\subsubsection{Definition}
+The mode is the most frequent element in a dataset.
+
+\subsubsection{Uses}
+\begin{itemize}
+    \item Frequency-based decisions
+    \item Majority element problems
+    \item Hash map counting problems
+\end{itemize}
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Majority Element}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{LeetCode — Majority Element}
+
+\paragraph{Link}
+\url{https://leetcode.com/problems/majority-element/description/}
+
+\paragraph{Core Idea}
+
+A “majority element” is an element that appears **more than $\lfloor n/2 \rfloor$ times** in an array of length $n$.
+
+Key observations:
+\begin{itemize}
+    \item The majority element is unique if it exists.
+    \item A naive frequency map takes $O(n)$ time and $O(n)$ space.
+    \item There exists an $O(n)$ time and $O(1)$ space algorithm:
+          the \textbf{Boyer–Moore Voting Algorithm}.
+\end{itemize}
+
+Boyer–Moore works by maintaining a candidate and a counter:
+\[
+\text{if counter } = 0, \text{ set candidate = current element}
+\]
+\[
+\text{if current == candidate, counter++ else counter--}
+\]
+
+The final candidate is the majority element if a majority element exists (since it survives net cancellation).
+
+
+% -----------------------------------------------------
+\subsection{Practice Problem: Majority Element II}
+% -----------------------------------------------------
+
+\paragraph{Problem}
+\textbf{LeetCode — Majority Element II}
+
+\paragraph{Link}
+\url{https://leetcode.com/problems/majority-element-ii/description/}
+
+\paragraph{Core Idea}
+
+This is a generalization: find all elements that appear **more than $\lfloor n/3 \rfloor$ times**.
+
+There can be at most two such elements.
+The optimized $O(n)$, $O(1)$ space method extends Boyer–Moore:
+
+\begin{itemize}
+    \item Maintain two candidates and two counters.
+    \item First pass: adjust candidates/counters by cancellation.
+    \item Second pass: verify actual counts.
+\end{itemize}
+
+---
+
+% -----------------------------------------------------
+\section{Additional Practice Problems}
+% -----------------------------------------------------
+
+\paragraph{Suffix Sums \& Combinatorics :}
+\textbf{CF 2008F} \\
+\url{https://codeforces.com/contest/2008/problem/F}
+
+\paragraph{Bitwise Operations :}
+\textbf{CF 1614C} \\
+\url{https://codeforces.com/problemset/problem/1614/C}
+
+\paragraph{Factors :}
+\textbf{CF 1925B} \\
+\url{https://codeforces.com/contest/1925/problem/B}
+
+\paragraph{Combinatorics :}
+\textbf{CF 2150B} \\
+\url{https://codeforces.com/problemset/problem/2150/B}
+
+\paragraph{Brute Force :}
+\textbf{CF 2144D} \\
+\url{https://codeforces.com/problemset/problem/2144/D}
+
+\paragraph{Maths (Log2) :}
+\textbf{CF 2013B} \\
+\url{https://codeforces.com/problemset/problem/2109/B}
+
+\paragraph{Binary Numbers :}
+\textbf{CF 1225C} \\
+\url{https://codeforces.com/problemset/problem/1225/C}
+
+\paragraph{Factors :}
+\textbf{CF 2193E} \\
+\url{https://codeforces.com/problemset/problem/2193/E}
+
+\paragraph{Bitwise :}
+\textbf{CF 2189C2} \\
+\url{https://codeforces.com/problemset/problem/2189/C2}
+
+\paragraph{Telescopic Series :}
+\textbf{CF 2183E} \\
+\url{https://codeforces.com/problemset/problem/2183/E}
+
+\paragraph{GCD : }
+\textbf{CF 2116C} \\
+\url{https://codeforces.com/contest/2116/problem/C}
+
+\paragraph{Digits :}
+\textbf{CF 2132D} \\
+\url{https://codeforces.com/problemset/problem/2132/D}
+
+\paragraph{Prefix/ Suffix GCD :}
+\textbf{CF 2126E} \\
+\url{https://codeforces.com/problemset/problem/2126/E}
+
+\paragraph{Arithemetic Progression :}
+\textbf{CF 2117D} \\
+\url{https://codeforces.com/problemset/problem/2117/D}
+
+\paragraph{Number Theory}
+\textbf{CF 2109C2} \\
+\url{https://codeforces.com/problemset/problem/2109/C2}
+
+
+\end{document}
